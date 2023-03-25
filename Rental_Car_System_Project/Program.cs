@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rental_Car_System_Project.Data;
+using Rental_Car_System_Project.Models;
 
 namespace Rental_Car_System_Project
 {
@@ -16,8 +17,20 @@ namespace Rental_Car_System_Project
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+
+            }).AddDefaultUI()
+              .AddRoles<IdentityRole>()
+              .AddRoleManager<RoleManager<IdentityRole>>()
+              .AddUserManager<UserManager<User>>()
+              .AddEntityFrameworkStores<ApplicationDbContext>();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

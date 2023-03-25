@@ -1,16 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Rental_Car_System_Project.Models
 {
-    public class User
+    public class User : IdentityUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required]
-        public string Username { get; set; }
 
         [DataType(DataType.Password)]
         [Required]
