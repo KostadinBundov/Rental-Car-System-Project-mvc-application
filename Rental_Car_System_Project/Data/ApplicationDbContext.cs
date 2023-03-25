@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Rental_Car_System_Project.Models;
 
 namespace Rental_Car_System_Project.Data
 {
@@ -9,5 +10,9 @@ namespace Rental_Car_System_Project.Data
             : base(options)
         {
         }
+
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Car> Cars { get; set; }
+        public virtual DbSet<Request> Requests { get; set; }
     }
 }
