@@ -6,9 +6,9 @@ namespace Rental_Car_System_Project.Models
 {
     public class User : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public int Id { get; set; }
 
         [DataType(DataType.Password)]
         [Required]
@@ -24,12 +24,12 @@ namespace Rental_Car_System_Project.Models
         [Required]
         public string PIN { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
-        [Required]
-        public string PhoneNumber { get; set; }
+        //[DataType(DataType.PhoneNumber)]
+        //[Required]
+        //public string PhoneNumber { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        [Required]
-        public string Email { get; set; }
+        //[DataType(DataType.EmailAddress)]
+        //[Required]
+        //public string Email { get; set; }
     }
 }
