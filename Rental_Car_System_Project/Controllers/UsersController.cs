@@ -87,27 +87,58 @@ namespace Rental_Car_System_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,FirstName,LastName,Email,Password,PIN,PhoneNumber")] User user)
         {
+            //var editedUser = await _context.Users.FindAsync(user.Id);
 
-            var editedUser = await _context.Users.FindAsync(user.Id);
-            if(editedUser != null)
+            //if (editedUser != null)
+            //{
+            //    if (ModelState.IsValid)
+            //    {
+            //        editedUser.UserName = user.UserName;
+            //        editedUser.Email = user.Email
+            //        editedUser.FirstName = user.FirstName;
+            //        editedUser.LastName = user.LastName;
+            //        editedUser.PhoneNumber = user.PhoneNumber;
+            //        editedUser.PIN = user.PIN;
+
+            //        _context.Update(editedUser);
+            //        await _context.SaveChangesAsync();
+
+            //        return RedirectToAction(nameof(Index));
+            //    }
+            //}
+
+            //return View(user);
+
+            if (id != user.Id)
             {
-                if (ModelState.IsValid)
-                {
-                    editedUser.UserName= user.UserName;
-                    editedUser.Email = user.Email;
-                    editedUser.FirstName = user.FirstName;
-                    editedUser.LastName = user.LastName;
-                    editedUser.PhoneNumber = user.PhoneNumber;
-                    editedUser.PIN = user.PIN;
-
-                    _context.Update(editedUser);
-                    await _context.SaveChangesAsync();
-                }
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            var userToChange = await _context.Users.FindAsync(id);
+            user.Password = userToChange.Password;
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
             return View(user);
         }
 
@@ -149,7 +180,7 @@ namespace Rental_Car_System_Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CarExists(string id)
+        private bool UserExists(string id)
         {
             return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }

@@ -61,19 +61,19 @@ namespace Rental_Car_System_Project.Controllers
 
             if (isThereAnyRequestForTheseDates == false)
             {
-                if (ModelState.IsValid)
-                {
+                //if (ModelState.IsValid)
+                //{
                     Request request = new Request();
                     request.PickUpDate = requestModel.PickUpDate;
                     request.DropOffDate = requestModel.DropOffDate;
-                    request.CarId = ViewBag.CarId;
+                    request.CarId = requestModel.CarId;
                     var userName = User.Identity.Name;
                     var user = _context.Users.FirstOrDefault(x => x.UserName == userName);
                     request.UserId = user.Id;
 
                     _context.Add(request);
                     await _context.SaveChangesAsync();
-                }
+                //}
 
                 return RedirectToAction(nameof(Index));
             }

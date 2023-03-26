@@ -32,20 +32,24 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Cars list</a>   @*//... Can reserve a car while searching for it*@
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Cars</a>   @*//... Can reserve a car while searching for it*@
                             </li>
                             if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Cars</a>   @*//...List all cars*@
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a> @*//.....List all Users*@
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Requests" asp-action="Index">Requests</a> @*//.....List  all Requests*@
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Requests" asp-action="Index">All Requests</a> @*//.....List  all Requests*@
                                 </li>
                             }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Requests" asp-action="Index">My Requests</a> @* redirect to new view with only current user cars*@
+                                </li>
+                            }
+
                         }
                     </ul>
                     <partial name="_LoginPartial" />
