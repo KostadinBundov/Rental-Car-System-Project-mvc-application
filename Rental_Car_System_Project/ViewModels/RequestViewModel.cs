@@ -1,17 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Rental_Car_System_Project.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Rental_Car_System_Project.Models
+namespace Rental_Car_System_Project.ViewModels
 {
-    public class Request
+    public class RequestViewModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [Required]
         public int CarId { get; set; }
-        public virtual Car Car { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -23,6 +18,5 @@ namespace Rental_Car_System_Project.Models
 
         [Required]
         public string UserId { get; set; }
-        public virtual User User { get; set; }
     }
 }

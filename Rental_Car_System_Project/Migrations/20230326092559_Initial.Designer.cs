@@ -9,11 +9,11 @@ using Rental_Car_System_Project.Data;
 
 #nullable disable
 
-namespace Rental_Car_System_Project.Data.Migrations
+namespace Rental_Car_System_Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230325100226_scaffolding1")]
-    partial class scaffolding1
+    [Migration("20230326092559_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -281,17 +281,15 @@ namespace Rental_Car_System_Project.Data.Migrations
                     b.Property<DateTime>("PickUpDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Requests");
                 });
@@ -380,7 +378,9 @@ namespace Rental_Car_System_Project.Data.Migrations
 
                     b.HasOne("Rental_Car_System_Project.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Car");
 
