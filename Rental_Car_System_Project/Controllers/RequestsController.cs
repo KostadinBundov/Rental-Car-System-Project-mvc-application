@@ -54,26 +54,26 @@ namespace Rental_Car_System_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CarId,PickUpDate,DropOffDate,UserId")] RequestViewModel requestModel)
+        public async Task<IActionResult> Create(RequestViewModel requestModel)
         {
+            requestModel.UserId = this.GetUserId();
+
             var allRequestsForCurrentCar = _context.Requests.Where(x => x.CarId == requestModel.CarId).ToList();
             var isThereAnyRequestForTheseDates = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
 
             if (isThereAnyRequestForTheseDates == false)
             {
-                //if (ModelState.IsValid)
-                //{
+                if (ModelState.IsValid)
+                {
                     Request request = new Request();
                     request.PickUpDate = requestModel.PickUpDate;
                     request.DropOffDate = requestModel.DropOffDate;
                     request.CarId = requestModel.CarId;
-                    var userName = User.Identity.Name;
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == userName);
-                    request.UserId = user.Id;
+                    request.UserId = requestModel.UserId;
 
                     _context.Add(request);
                     await _context.SaveChangesAsync();
-                //}
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -177,6 +177,13 @@ namespace Rental_Car_System_Project.Controllers
         private bool RequestExists(int id)
         {
             return (_context.Requests?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        private string GetUserId()
+        {
+            var name = User.Identity?.Name;
+            var user = _context.Users.FirstOrDefault(x => x.UserName == name);
+
+            return user.Id;
         }
     }
 }

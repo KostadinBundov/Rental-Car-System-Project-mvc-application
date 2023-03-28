@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rental_Car_System_Project.Data;
 using Rental_Car_System_Project.Models;
+using Rental_Car_System_Project.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace Rental_Car_System_Project.Controllers
@@ -87,7 +89,7 @@ namespace Rental_Car_System_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,FirstName,LastName,Email,Password,PIN,PhoneNumber")] User user)
+        public async Task<IActionResult> Edit(string id, UserViewModel user)
         {
             //var editedUser = await _context.Users.FindAsync(user.Id);
 
@@ -111,24 +113,30 @@ namespace Rental_Car_System_Project.Controllers
 
             //return View(user);
 
-            if (id != user.Id)
+            var edditedUser = _context.Users.Find(id);
+
+            if (edditedUser == null)
             {
                 return NotFound();
             }
-
-            var userToChange = await _context.Users.FindAsync(id);
-            user.Password = userToChange.Password;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
+                    edditedUser.FirstName = user.FirstName;
+                    edditedUser.LastName = user.LastName;
+                    edditedUser.UserName = user.UserName;
+                    edditedUser.Email = user.Email;
+                    edditedUser.PhoneNumber = user.PhoneNumber;
+                    edditedUser.PIN = user.PIN;
+
+                    _context.Update(edditedUser);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!UserExists(id))
                     {
                         return NotFound();
                     }
