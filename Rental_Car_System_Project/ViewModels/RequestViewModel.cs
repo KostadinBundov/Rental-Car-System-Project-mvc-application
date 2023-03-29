@@ -9,14 +9,11 @@ namespace Rental_Car_System_Project.ViewModels
         public int CarId { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime PickUpDate { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime DropOffDate { get; set; }
-
-        [Required]
-        public string UserId { get; set; }
     }
 }

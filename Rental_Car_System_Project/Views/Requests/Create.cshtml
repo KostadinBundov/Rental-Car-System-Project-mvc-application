@@ -1,4 +1,4 @@
-﻿@model Rental_Car_System_Project.Models.Request
+﻿@model Rental_Car_System_Project.ViewModels.RequestViewModel
 @*@Html.HiddenFor(m => m.CarId)*@
 
 @{
@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CarId" class="control-label"></label>
-                <select asp-for="CarId" class ="form-control"></select>
+                <input asp-for="CarId" class="form-control" disabled></input>
             </div>
             <div class="form-group">
                 <label asp-for="PickUpDate" class="control-label"></label>
@@ -27,16 +27,8 @@
                 <input asp-for="DropOffDate" class="form-control" />
                 <span asp-validation-for="DropOffDate" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            @*<div style="display:none">
-                @ViewBag.CarId = @Model.CarId;
-            </div>*@
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Reserve" class="btn btn-primary" />
             </div>
         </form>
     </div>

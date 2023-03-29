@@ -43,10 +43,11 @@ namespace Rental_Car_System_Project.Controllers
         }
 
         // GET: Requests/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "CarBrand");
-            return View();
+            RequestViewModel data = new RequestViewModel();
+            data.CarId = id;
+            return View(data);
         }
 
         // POST: Requests/Create
@@ -56,8 +57,6 @@ namespace Rental_Car_System_Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RequestViewModel requestModel)
         {
-            requestModel.UserId = this.GetUserId();
-
             var allRequestsForCurrentCar = _context.Requests.Where(x => x.CarId == requestModel.CarId).ToList();
             var isThereAnyRequestForTheseDates = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
 
@@ -69,7 +68,7 @@ namespace Rental_Car_System_Project.Controllers
                     request.PickUpDate = requestModel.PickUpDate;
                     request.DropOffDate = requestModel.DropOffDate;
                     request.CarId = requestModel.CarId;
-                    request.UserId = requestModel.UserId;
+                    request.UserId = this.GetUserId();
 
                     _context.Add(request);
                     await _context.SaveChangesAsync();
