@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Rental_Car_System_Project.Data;
@@ -20,7 +21,44 @@ namespace Rental_Car_System_Project.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Requests.Include(r => r.Car);
-            return View(await applicationDbContext.ToListAsync());
+            List<Request> requestsList = new List<Request>();
+
+            foreach (var request in applicationDbContext)
+            {
+                request.User = await _context.Users.FindAsync(request.UserId);
+
+                requestsList.Add(request);
+
+            }
+
+            if (User.IsInRole("Admin"))
+            {
+                return View(requestsList);
+            }
+            else
+            {
+                return View(requestsList.Where(x => x.UserId == this.GetUserId()));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Approve(int id)
+        {
+            Request request = await _context.Requests.FindAsync(id);
+
+            if (request != null)
+            {
+                request.IsRequestApproved = true;
+            }
+            else
+            {
+                return View("MakeARequestPage");
+            }
+
+            _context.Update(request);
+            await _context.SaveChangesAsync();
+
+            return View("Index");
         }
 
         // GET: Requests/Details/5
@@ -58,9 +96,11 @@ namespace Rental_Car_System_Project.Controllers
         public async Task<IActionResult> Create(RequestViewModel requestModel)
         {
             var allRequestsForCurrentCar = _context.Requests.Where(x => x.CarId == requestModel.CarId).ToList();
-            var isThereAnyRequestForTheseDates = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
+            var isThereAnyRequestForTheseDatesPT1 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
+            var isThereAnyRequestForTheseDatesPT2 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.DropOffDate && requestModel.DropOffDate <= x.DropOffDate);
+            var isDateAlreadyGone = requestModel.PickUpDate < DateTime.Now || requestModel.DropOffDate <= DateTime.Now;
 
-            if (isThereAnyRequestForTheseDates == false)
+            if (isThereAnyRequestForTheseDatesPT1 == false || isThereAnyRequestForTheseDatesPT2 == false || isDateAlreadyGone == false)
             {
                 if (ModelState.IsValid)
                 {
@@ -104,35 +144,38 @@ namespace Rental_Car_System_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CarId,PickUpDate,DropOffDate,UserId")] Request request)
+        public async Task<IActionResult> Edit(int id, RequestViewModel requestModel)
         {
-            if (id != request.Id)
+            var edditedRequest = _context.Requests.Find(id);
+
+            if (edditedRequest == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var allRequestsForCurrentCar = _context.Requests.Where(x => x.CarId == requestModel.CarId && x.UserId != this.GetUserId()).ToList();
+            var isThereAnyRequestForTheseDatesPT1 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
+            var isThereAnyRequestForTheseDatesPT2 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.DropOffDate && requestModel.DropOffDate <= x.DropOffDate);
+            var isDateAlreadyGone = requestModel.PickUpDate < DateTime.Now || requestModel.DropOffDate <= DateTime.Now;
+
+            if (isThereAnyRequestForTheseDatesPT1 == false || isThereAnyRequestForTheseDatesPT2 == false || isDateAlreadyGone == false)
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(request);
+                    edditedRequest.CarId = requestModel.CarId;
+                    edditedRequest.PickUpDate = requestModel.PickUpDate;
+                    edditedRequest.DropOffDate = requestModel.DropOffDate;
+
+                    _context.Update(edditedRequest);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RequestExists(request.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "CarBrand", request.CarId);
-            return View(request);
+            else
+            {
+                return View("MakeARequestPage");
+            }
         }
 
         // GET: Requests/Delete/5
@@ -146,6 +189,10 @@ namespace Rental_Car_System_Project.Controllers
             var request = await _context.Requests
                 .Include(r => r.Car)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var user = _context.Users.Find(request.UserId);
+            request.User = user;
+
             if (request == null)
             {
                 return NotFound();

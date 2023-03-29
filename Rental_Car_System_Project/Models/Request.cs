@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Rental_Car_System_Project.Models
 {
@@ -24,5 +25,8 @@ namespace Rental_Car_System_Project.Models
         [Required]
         public string UserId { get; set; }
         public virtual User User { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsRequestApproved { get; set; }
     }
 }

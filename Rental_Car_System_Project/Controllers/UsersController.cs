@@ -91,28 +91,6 @@ namespace Rental_Car_System_Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, UserViewModel user)
         {
-            //var editedUser = await _context.Users.FindAsync(user.Id);
-
-            //if (editedUser != null)
-            //{
-            //    if (ModelState.IsValid)
-            //    {
-            //        editedUser.UserName = user.UserName;
-            //        editedUser.Email = user.Email
-            //        editedUser.FirstName = user.FirstName;
-            //        editedUser.LastName = user.LastName;
-            //        editedUser.PhoneNumber = user.PhoneNumber;
-            //        editedUser.PIN = user.PIN;
-
-            //        _context.Update(editedUser);
-            //        await _context.SaveChangesAsync();
-
-            //        return RedirectToAction(nameof(Index));
-            //    }
-            //}
-
-            //return View(user);
-
             var edditedUser = _context.Users.Find(id);
 
             if (edditedUser == null)
