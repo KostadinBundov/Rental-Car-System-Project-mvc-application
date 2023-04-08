@@ -15,11 +15,11 @@ namespace Rental_Car_System_Project.Models
         public virtual Car Car { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime PickUpDate { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime DropOffDate { get; set; }
 
         [Required]

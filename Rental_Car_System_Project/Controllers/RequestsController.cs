@@ -97,10 +97,9 @@ namespace Rental_Car_System_Project.Controllers
         {
             var allRequestsForCurrentCar = _context.Requests.Where(x => x.CarId == requestModel.CarId).ToList();
             var isThereAnyRequestForTheseDatesPT1 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.PickUpDate && requestModel.PickUpDate <= x.DropOffDate);
-            var isThereAnyRequestForTheseDatesPT2 = allRequestsForCurrentCar.Any(x => x.PickUpDate <= requestModel.DropOffDate && requestModel.DropOffDate <= x.DropOffDate);
-            var isDateAlreadyGone = requestModel.PickUpDate < DateTime.Now || requestModel.DropOffDate <= DateTime.Now;
+            var isThereAnyRequestForTheseDatesPT2 = allRequestsForCurrentCar.Any(x => x.DropOffDate <= requestModel.DropOffDate && requestModel.DropOffDate <= x.DropOffDate);
 
-            if (isThereAnyRequestForTheseDatesPT1 == false || isThereAnyRequestForTheseDatesPT2 == false || isDateAlreadyGone == false)
+            if (isThereAnyRequestForTheseDatesPT1 == false && isThereAnyRequestForTheseDatesPT2 == false && requestModel.PickUpDate >= DateTime.Now)
             {
                 if (ModelState.IsValid)
                 {

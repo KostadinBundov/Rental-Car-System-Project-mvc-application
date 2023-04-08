@@ -22,7 +22,7 @@ namespace Rental_Car_System_Project.Models
         public int PassengerSeats { get; set; }
 
         [MaxLength(200)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public decimal Price { get; set; }
