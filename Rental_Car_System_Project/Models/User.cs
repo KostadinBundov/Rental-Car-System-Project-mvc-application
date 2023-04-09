@@ -18,6 +18,7 @@ namespace Rental_Car_System_Project.Models
 
         //Personal Identificational Number
         [Required]
+        [StringLength(10, ErrorMessage = "The PIN must be 10 digits long. ")]
         public string PIN { get; set; }
     }
 }

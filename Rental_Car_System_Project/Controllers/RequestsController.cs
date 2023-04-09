@@ -41,7 +41,6 @@ namespace Rental_Car_System_Project.Controllers
             }
         }
 
-        [HttpPost]
         public async Task<IActionResult> Approve(int id)
         {
             Request request = await _context.Requests.FindAsync(id);
@@ -58,7 +57,7 @@ namespace Rental_Car_System_Project.Controllers
             _context.Update(request);
             await _context.SaveChangesAsync();
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         // GET: Requests/Details/5
